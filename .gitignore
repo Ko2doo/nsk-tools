@@ -5,9 +5,6 @@ node_modules/
 */**/*.directory
 *.directory
 
-# Ignore Build directory
-build/
-src/
 
 # Ignore package-lock.json file
 #package-lock.json
