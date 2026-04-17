@@ -1,32 +1,95 @@
-/* eslint-disable n/no-unpublished-import */
+//@ts-check
+
+import type * as fsType from 'node:fs';
+import type * as fsPromisesType from 'node:fs/promises';
+import type * as nodePathType from 'node:path';
 
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
-import node_path from 'node:path';
+import * as node_path from 'node:path';
 
+import type { loadConfig } from 'svgo';
+
+import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import chalk from 'chalk';
-import svg64 from 'svg64';
+import type svg64 from 'svg64';
+import svg64Plugin from 'svg64';
+
+// Plugin types
+export type KitPlugin = {
+  chalk: typeof chalk;
+  archiver: typeof import('archiver');
+  svg64: typeof svg64;
+};
+
+// System types
+export type KitSys = {
+  fs: typeof fsType;
+  fsPromises: typeof fsPromisesType;
+  node_path: typeof nodePathType;
+  __dirname: string;
+};
+
+// Styles types
+type StyleConfig = {
+  extension: string;
+  component_path: string;
+  include_in: string;
+
+  component_stylesheet(this: StyleConfig, dir_path: string, value: string): string;
+
+  import_stylesheet(this: StyleConfig, value: string): string;
+};
+
+// Kit config types
+export type KitConfig = {
+  template: {
+    extension: string;
+    data_dir: string;
+    spawn_dir(value: string): string;
+  };
+
+  styles: StyleConfig;
+
+  archive: Array<{
+    options: {
+      mode: 'tgz' | 'tar' | 'zip';
+      extension: string;
+      make(): ReturnType<typeof archiver>;
+    };
+  }>;
+
+  svgocfg: typeof loadConfig;
+  jpegtrancfg: { progressive: boolean };
+  pngquantcfg: { quality: [number, number] };
+  webpcfg: {
+    quality: number;
+    method: number;
+    lossless: boolean;
+    nearLossless: boolean;
+  };
+};
 
 const __dirname = node_path.resolve();
 const CWD = process.cwd();
 
 // часто используемые плагины
-export const KITPLUGIN = {
+export const KITPLUGIN: KitPlugin = {
   chalk: chalk,
   archiver: archiver,
-  svg64: svg64,
+  svg64: svg64Plugin,
 };
 
 // часто используемые системные и прочие API Node.js
-export const KITSYS = {
+export const KITSYS: KitSys = {
   fs: fs,
   fsPromises: fsPromises,
   node_path: node_path,
   __dirname: __dirname,
 };
 
-export const KITCONFIG = {
+export const KITCONFIG: KitConfig = {
   template: {
     extension: '.njk',
     data_dir: KITSYS.node_path.resolve(CWD, 'src/views/data/'),
