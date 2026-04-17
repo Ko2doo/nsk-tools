@@ -1,19 +1,18 @@
-//@ts-check
-
+// Import types
 import type * as fsType from 'node:fs';
 import type * as fsPromisesType from 'node:fs/promises';
 import type * as nodePathType from 'node:path';
+import type { loadConfig } from 'svgo';
+import type { Archiver } from 'archiver';
+import type svg64 from 'svg64';
 
+// Import Libraries
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as node_path from 'node:path';
 
-import type { loadConfig } from 'svgo';
-
-import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import chalk from 'chalk';
-import type svg64 from 'svg64';
 import svg64Plugin from 'svg64';
 
 // Plugin types
