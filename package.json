@@ -2,6 +2,19 @@
   "name": "nsk-tools",
   "version": "1.0.0",
   "description": "nsk-tools - description: Nunjucks Starter Kit tools. CLI tools to gulp-nunjucks-starter-kit project.",
+  "type": "module",
+  "bin": {
+    "nsk-tools": "./dist/bin/cli.js"
+  },
+  "main": "./dist/bin/cli.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/bin/cli.ts",
+    "prepublishOnly": "npm run build"
+  },
   "keywords": [
     "CLI",
     "tools",
@@ -21,16 +34,6 @@
   "author": {
     "name": "NИ",
     "email": "galaxyrobotix@gmail.com"
-  },
-  "type": "module",
-  "bin": {
-    "nsk-tools": "./bin/cli.mjs"
-  },
-  "files": [
-    "bin/"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
     "node": ">=20",
@@ -55,7 +58,10 @@
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",
+    "@types/node": "^25.6.0",
     "@types/yargs": "^17.0.35",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   }
 }
