@@ -1,0 +1,27 @@
+# Ignore Node Modules
+node_modules/
+
+# Ignore all .directory files
+*/**/*.directory
+*.directory
+
+# Ignore Build directory
+build/
+src/
+
+# Ignore package-lock.json file
+#package-lock.json
+
+# Ignore archives directory
+archives/
+archives/**
+
+# Ignore converting directory
+base64Convert/
+
+# Ignore archives
+*.tar.gz
+*.tar
+*.7z
+*.rar
+*.zip

@@ -1,0 +1,63 @@
+# Что это за файл?
+# .editorconfig помогает поддерживать согласованные стили кодирования для нескольких разработчиков,
+# работающих над одним и тем же проектом в разных редакторах и IDE
+#
+# Если вы разрабатываете в редакторе WebStorm, BBEdit, Coda или SourceLair
+# этот файл уже поддерживается и не нужно производить никаких дополнительных
+# действий.
+#
+# Если вы ведёте разработку в другом редакторе, зайдите
+# на https://editorconfig.org и в разделе «Download a Plugin»
+# скачайте дополнение для вашего редактора.
+#
+# Больше информации по настройкам: https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
+
+root = true
+
+# для всех файлов в проекте
+[*]
+charset = utf-8
+
+# правила форматирования для javascript файлов
+[*.{js,cjs,mjs,ts}]
+max_line_length = 120
+quote_type = single
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# правила форматирования для json
+[*.json]
+quote_type = double
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# правила форматирования для bash
+[*.sh]
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# для всех файлов .md
+[*.md]
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[{**build**,**vendor**}]
+indent_size = unset
+indent_style = unset
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+max_line_length = unset
