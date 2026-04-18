@@ -51,7 +51,6 @@ export const builder = (yargs: Argv): Argv<ArchiveArgv> => {
 };
 
 export const handler = async (argv: ArgumentsCamelCase<ArchiveArgv>): Promise<void> => {
-  // @ts-ignore
   const { default: createArchiveApp } = await import('../../utils/createArchiveApp.js');
 
   await createArchiveApp({

@@ -27,7 +27,6 @@ export const builder = (yargs: Argv): Argv<ComponentArgv> => {
 };
 
 export const handler = async (argv: ArgumentsCamelCase<ComponentArgv>): Promise<void> => {
-  // @ts-ignore
   const { default: createComponentApp } = await import('../../utils/createComponentApp.js');
 
   await createComponentApp({

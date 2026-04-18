@@ -200,7 +200,7 @@ export function errorThrower(msg: unknown): never {
     throw new Error(msg.trim());
   }
 
-  throw new Error(JSON.stringify(msg));
+  throw new Error(String(msg));
 }
 
 // @type function
