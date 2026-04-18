@@ -1,7 +1,14 @@
-// команда imagemin - для оптимизации изображений, используется imagemin и прочие плагины.
+import type { Argv, ArgumentsCamelCase } from 'yargs';
 
 import { KITSYS } from '../config/config.js';
 const node_path = KITSYS.node_path;
+
+interface IImageminArgv {
+  minify: string;
+  convert: string;
+  input: string;
+  output: string;
+}
 
 export const command = 'imagemin';
 export const describe = `
@@ -26,7 +33,7 @@ export const describe = `
     $ npx nsk-tools imagemin -m jpeg --input="./src/assets/img" --output="./build/assets/img"
 `.trim();
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<IImageminArgv> => {
   // Опция для выбора режима работы
   yargs.option('minify', {
     alias: 'm',
@@ -75,9 +82,11 @@ export const builder = (yargs) => {
 
   // необходимые опции для работы команды, иначе ошибка
   yargs.demandOption(['input', 'output'], 'Необходимо указать опции с путями: --input (или -i) и --output (или -o)');
+
+  return yargs as Argv<IImageminArgv>;
 };
 
-export const handler = async (argv) => {
+export const handler = async (argv: ArgumentsCamelCase<IImageminArgv>): Promise<void> => {
   const { default: imageminApp } = await import('../utils/imageminApp.js');
 
   await imageminApp({

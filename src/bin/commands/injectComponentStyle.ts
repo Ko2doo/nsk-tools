@@ -1,4 +1,8 @@
-// команда import -s --style style_name
+import type { Argv, ArgumentsCamelCase } from 'yargs';
+
+interface InjectStyle {
+  style: string;
+}
 
 export const command = 'import';
 export const describe = `
@@ -9,10 +13,10 @@ export const describe = `
     -s или --style - для указания названия файла стилей компонента.
 
   Полная команда:
-    $ node ./cli-app/cli-tools.mjs import -s Header
+    $ npx nsk-tools import --s Header
   `.trim();
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<InjectStyle> => {
   // Опция для передачи названия файла стилей
   yargs.option('style', {
     alias: 's',
@@ -25,13 +29,15 @@ export const builder = (yargs) => {
     'style',
     'Передайте вторым аргументом ключевую опцию style, и после название импортируемого файла стилей компонента.',
   );
+
+  return yargs as Argv<InjectStyle>;
 };
 
-export const handler = async (argv) => {
+export const handler = async (argv: ArgumentsCamelCase<InjectStyle>): Promise<void> => {
   const { default: injectComponentStyleApp } = await import('../utils/injectComponentStyleApp.js');
 
   await injectComponentStyleApp({
-    value: String(argv.style ?? '').trim(),
+    value: argv.style.trim(),
   });
 
   // console.log(argv);

@@ -1,4 +1,9 @@
-// команда convert
+import type { Argv, ArgumentsCamelCase } from 'yargs';
+
+interface Base64ConverterArgv {
+  mode: string;
+  path: string;
+}
 
 export const command = 'base64Converter';
 export const describe = `
@@ -15,7 +20,7 @@ export const describe = `
   Полная команда:
   $ npx nsk-tools base64Converter -m="single" -p="./src/assets/img/yourSvg.svg"`.trim();
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<Base64ConverterArgv> => {
   // Опция для указания формата кодирования, всей дир-рии или только одного файла
   yargs.option('mode', {
     alias: 'm',
@@ -32,9 +37,11 @@ export const builder = (yargs) => {
 
   // необходимые опции для работы команды, иначе ошибка
   yargs.demandOption(['mode', 'path'], 'Пожалуйста укажите режим работы конвертора и путь до конвертируемого объекта.');
+
+  return yargs as Argv<Base64ConverterArgv>;
 };
 
-export const handler = async (argv) => {
+export const handler = async (argv: ArgumentsCamelCase<Base64ConverterArgv>): Promise<void> => {
   const { default: base64ConverterApp } = await import('../utils/base64ConverterApp.js');
 
   await base64ConverterApp({
