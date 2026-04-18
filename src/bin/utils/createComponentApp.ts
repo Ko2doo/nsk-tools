@@ -1,3 +1,5 @@
+import type { ComponentAppOption } from '../@types/component.js';
+
 // Утилита для создания компонента
 import {
   KITSYS as system,
@@ -7,7 +9,7 @@ import {
   errorThrower,
 } from '../config/config.js';
 
-const createComponentApp = async ({ name }) => {
+const createComponentApp = async ({ name }: ComponentAppOption): Promise<void> => {
   try {
     if (!name) {
       return errorThrower(`
@@ -48,8 +50,16 @@ const createComponentApp = async ({ name }) => {
         return errorThrower(`Путь существует, но это не директория: ${component_out_dir_log}`);
       }
     } catch (error) {
-      // ENOENT - директории нет, можно создавать; прочее - пробрасываем
-      if (error.code !== 'ENOENT') return errorThrower(error);
+      interface NodeJSException {
+        code?: string;
+      }
+
+      if (error instanceof Error) {
+        // ENOENT - директории нет, можно создавать; прочее - пробрасываем
+        if ((error as NodeJSException).code !== 'ENOENT') return errorThrower(error);
+      } else {
+        return errorThrower(String(error));
+      }
     }
 
     // Гарантируем наличие директорий
@@ -79,7 +89,7 @@ const createComponentApp = async ({ name }) => {
       ),
     );
   } catch (error) {
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 };
 

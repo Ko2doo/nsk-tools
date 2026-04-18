@@ -1,11 +1,5 @@
 import type { Argv, ArgumentsCamelCase } from 'yargs';
-import type { ArchiveMode } from '../../config/config.js';
-
-// Type from command args
-interface ArchiveArgv {
-  options: ArchiveMode;
-  path: string;
-}
+import type { ArchiveAppOption } from '../../@types/archive.js';
 
 export const command = 'archive';
 export const describe = `
@@ -26,7 +20,7 @@ export const describe = `
     $ npx nsk-tools create archive -o tgz -p build
   `.trim();
 
-export const builder = (yargs: Argv): Argv<ArchiveArgv> => {
+export const builder = (yargs: Argv): Argv<ArchiveAppOption> => {
   // Опция для указания формата архива
   yargs.option('options', {
     alias: 'o',
@@ -47,10 +41,10 @@ export const builder = (yargs: Argv): Argv<ArchiveArgv> => {
     'Пожалуйста укажите опции архиватора и путь или название дир-рии что-бы создать архив.',
   );
 
-  return yargs as Argv<ArchiveArgv>;
+  return yargs as Argv<ArchiveAppOption>;
 };
 
-export const handler = async (argv: ArgumentsCamelCase<ArchiveArgv>): Promise<void> => {
+export const handler = async (argv: ArgumentsCamelCase<ArchiveAppOption>): Promise<void> => {
   const { default: createArchiveApp } = await import('../../utils/createArchiveApp.js');
 
   await createArchiveApp({

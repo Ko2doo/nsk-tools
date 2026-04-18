@@ -1,23 +1,27 @@
 // Утилита для конвертации svg в base64 и вывода результата в консоль.
+
+import type { Base64ConverterAppOption } from '../@types/base64Converter.js';
 import { KITSYS as system, PROJECT_ROOT as root_dir, KITPLUGIN as plugin, errorThrower } from '../config/config.js';
 
-const OUTPUT_FILE = 'base64-output.txt';
-const TXT = 'utf8';
+const OUTPUT_FILE: string = 'base64-output.txt';
+const TXT: BufferEncoding = 'utf8';
 
 // Локальный helper
-const base64FromSVG = (data) => plugin.svg64(data);
+const base64FromSVG = (data: string) => plugin.svg64(data);
 
 /**
  * Конвертация одного файла (mode=single)
  */
-async function convertSingle(user_path) {
+async function convertSingle(user_path: string): Promise<void> {
   const abs_file = system.node_path.resolve(system.__dirname, user_path);
   const st = await system.fsPromises.stat(abs_file).catch(() => null);
+
   if (!st || !st.isFile()) {
     return errorThrower(`Файл не найден: ${abs_file}`);
   }
 
   const svg = await system.fsPromises.readFile(abs_file, TXT);
+
   console.log(plugin.chalk.bgYellow('--------- [Результат конвертации] ---------'));
   console.log(`\n${plugin.chalk.dim(base64FromSVG(svg))}\n`);
   console.log(plugin.chalk.yellow('Скопируйте код из вывода и используйте его в HTML/CSS.'));
@@ -26,7 +30,7 @@ async function convertSingle(user_path) {
 /**
  * Конвертация всех SVG в каталоге (mode=all)
  */
-async function convertAll(user_dir) {
+async function convertAll(user_dir: string): Promise<void> {
   const abs_dir = system.node_path.resolve(system.__dirname, user_dir);
   const st = await system.fsPromises.stat(abs_dir).catch(() => null);
 
@@ -80,7 +84,7 @@ async function convertAll(user_dir) {
 /**
  * Входная точка
  */
-const base64ConverterApp = async ({ mode, input }) => {
+const base64ConverterApp = async ({ mode, input }: Base64ConverterAppOption): Promise<void> => {
   try {
     console.log(`Передан аргумент: ${plugin.chalk.green(mode ?? '(пусто)')}`);
 
@@ -104,7 +108,7 @@ const base64ConverterApp = async ({ mode, input }) => {
       await convertAll(input);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 };
 

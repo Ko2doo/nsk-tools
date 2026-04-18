@@ -1,14 +1,8 @@
 import type { Argv, ArgumentsCamelCase } from 'yargs';
+import type { ImageminAppOption } from '../@types/imagemin.js';
 
 import { KITSYS } from '../config/config.js';
 const node_path = KITSYS.node_path;
-
-interface IImageminArgv {
-  minify: string;
-  convert: string;
-  input: string;
-  output: string;
-}
 
 export const command = 'imagemin';
 export const describe = `
@@ -33,7 +27,7 @@ export const describe = `
     $ npx nsk-tools imagemin -m jpeg --input="./src/assets/img" --output="./build/assets/img"
 `.trim();
 
-export const builder = (yargs: Argv): Argv<IImageminArgv> => {
+export const builder = (yargs: Argv): Argv<ImageminAppOption> => {
   // Опция для выбора режима работы
   yargs.option('minify', {
     alias: 'm',
@@ -83,16 +77,16 @@ export const builder = (yargs: Argv): Argv<IImageminArgv> => {
   // необходимые опции для работы команды, иначе ошибка
   yargs.demandOption(['input', 'output'], 'Необходимо указать опции с путями: --input (или -i) и --output (или -o)');
 
-  return yargs as Argv<IImageminArgv>;
+  return yargs as Argv<ImageminAppOption>;
 };
 
-export const handler = async (argv: ArgumentsCamelCase<IImageminArgv>): Promise<void> => {
+export const handler = async (argv: ArgumentsCamelCase<ImageminAppOption>): Promise<void> => {
   const { default: imageminApp } = await import('../utils/imageminApp.js');
 
   await imageminApp({
     cmd: argv._[0], // команда imagemin
-    minifyCMD: argv.minify,
-    convertCMD: argv.convert,
+    minify: argv.minify,
+    convert: argv.convert,
     input: argv.input,
     output: argv.output,
   });

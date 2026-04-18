@@ -1,5 +1,5 @@
 // Import types
-import type { Config as SvgoConfig } from 'svgo';
+import type { StyleConfig, KitPlugin, KitSys, ArchiveMode, ArchiveItem, KitConfig } from '../@types/config.js';
 
 // Import Libraries
 import * as fs from 'node:fs';
@@ -9,65 +9,6 @@ import * as node_path from 'node:path';
 import archiver from 'archiver';
 import chalk from 'chalk';
 import svg64Plugin from 'svg64';
-
-// Plugin types
-export type KitPlugin = {
-  chalk: typeof chalk;
-  archiver: typeof archiver;
-  svg64: typeof svg64Plugin;
-};
-
-// System types
-export type KitSys = {
-  fs: typeof fs;
-  fsPromises: typeof fsPromises;
-  node_path: typeof node_path;
-  __dirname: string;
-};
-
-// Styles types
-type StyleConfig = {
-  extension: string;
-  component_path: string;
-  include_in: string;
-
-  component_stylesheet(dir_path: string, value: string): string;
-  import_stylesheet(value: string): string;
-};
-
-export type ArchiveMode = 'tgz' | 'tar' | 'zip';
-export interface ArchiveOptions {
-  mode: ArchiveMode;
-  extension: string;
-  make(): ReturnType<typeof archiver>;
-}
-
-export interface ArchiveItem {
-  options: ArchiveOptions;
-}
-
-// Kit config types
-export type KitConfig = {
-  template: {
-    extension: string;
-    data_dir: string;
-    spawn_dir(value: string): string;
-  };
-
-  styles: StyleConfig;
-
-  archive: ArchiveItem[];
-
-  svgocfg: SvgoConfig;
-  jpegtrancfg: { progressive: boolean };
-  pngquantcfg: { quality: [number, number] };
-  webpcfg: {
-    quality: number;
-    method: number;
-    lossless: boolean;
-    nearLossless: boolean;
-  };
-};
 
 const __dirname = node_path.resolve();
 const CWD = process.cwd();

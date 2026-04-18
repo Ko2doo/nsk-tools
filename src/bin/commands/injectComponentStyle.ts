@@ -1,8 +1,5 @@
 import type { Argv, ArgumentsCamelCase } from 'yargs';
-
-interface InjectStyle {
-  style: string;
-}
+import type { InjectStyleAppOption } from '../@types/injectComponentStyle.js';
 
 export const command = 'import';
 export const describe = `
@@ -16,7 +13,7 @@ export const describe = `
     $ npx nsk-tools import --s Header
   `.trim();
 
-export const builder = (yargs: Argv): Argv<InjectStyle> => {
+export const builder = (yargs: Argv): Argv<InjectStyleAppOption> => {
   // Опция для передачи названия файла стилей
   yargs.option('style', {
     alias: 's',
@@ -30,10 +27,10 @@ export const builder = (yargs: Argv): Argv<InjectStyle> => {
     'Передайте вторым аргументом ключевую опцию style, и после название импортируемого файла стилей компонента.',
   );
 
-  return yargs as Argv<InjectStyle>;
+  return yargs as Argv<InjectStyleAppOption>;
 };
 
-export const handler = async (argv: ArgumentsCamelCase<InjectStyle>): Promise<void> => {
+export const handler = async (argv: ArgumentsCamelCase<InjectStyleAppOption>): Promise<void> => {
   const { default: injectComponentStyleApp } = await import('../utils/injectComponentStyleApp.js');
 
   await injectComponentStyleApp({

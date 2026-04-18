@@ -1,9 +1,5 @@
 import type { Argv, ArgumentsCamelCase } from 'yargs';
-
-// Type from command args
-interface ComponentArgv {
-  name: string;
-}
+import type { ComponentAppOption } from '../../@types/component.js';
 
 export const command = 'component <name>';
 export const describe = `
@@ -16,17 +12,17 @@ export const describe = `
     $ npx nsk-tools create component Header
   `.trim();
 
-export const builder = (yargs: Argv): Argv<ComponentArgv> => {
+export const builder = (yargs: Argv): Argv<ComponentAppOption> => {
   yargs.positional('name', {
     type: 'string',
     describe: 'Название создаваемого компонента',
     demandOption: true,
   });
 
-  return yargs as Argv<ComponentArgv>;
+  return yargs as Argv<ComponentAppOption>;
 };
 
-export const handler = async (argv: ArgumentsCamelCase<ComponentArgv>): Promise<void> => {
+export const handler = async (argv: ArgumentsCamelCase<ComponentAppOption>): Promise<void> => {
   const { default: createComponentApp } = await import('../../utils/createComponentApp.js');
 
   await createComponentApp({

@@ -1,3 +1,5 @@
+import type { ArchiveAppOption } from '../@types/archive.js';
+
 import {
   KITSYS as system,
   KITPLUGIN as plugin,
@@ -6,7 +8,7 @@ import {
   errorThrower,
 } from '../config/config.js';
 
-const createArchiveApp = async ({ options, path }) => {
+const createArchiveApp = async ({ options, path }: ArchiveAppOption): Promise<void> => {
   try {
     const archive_mode = options;
     const get_dir_path = path;
@@ -77,7 +79,7 @@ const createArchiveApp = async ({ options, path }) => {
     // 3 - имя директории, так-же получаем из консоли (то что ввёл пользователь)
     create_archive(config.archive, archive_mode, absDir);
   } catch (error) {
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 };
 
