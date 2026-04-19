@@ -7,7 +7,7 @@ node_modules/
 
 # Ignore Build directory
 build/
-src/
+dist/
 
 # Ignore package-lock.json file
 #package-lock.json
