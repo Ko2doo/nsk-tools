@@ -19,7 +19,7 @@ const injectComponentStyleApp = async ({ value }: InjectStyleAppOption): Promise
     }
 
     // Формируем пути
-    const component_dir = `${cfg.styles.component_path}${value}`;
+    const component_dir = `${cfg.styles.component_path}/${value}`;
     const stylesheet_path = cfg.styles.component_stylesheet(component_dir, value);
     const index_path = cfg.styles.include_in;
 
