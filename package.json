@@ -1,6 +1,6 @@
 {
   "name": "@galaxyrobot1x/nsk-tools",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "nsk-tools - description: Nunjucks Starter Kit tools. CLI tools to gulp-nunjucks-starter-kit project.",
   "type": "module",
   "bin": {
