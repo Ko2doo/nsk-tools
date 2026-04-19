@@ -15,7 +15,7 @@ await build({
   platform: 'node',
   target: 'node20',
   format: 'esm',
-  outfile: 'dist/cli.js',
+  outfile: 'dist/bin/cli.js',
   // banner: {
   //   js: '#!/usr/bin/env node', // shebang save
   // },
