@@ -34,7 +34,7 @@ export const handler = async (argv: ArgumentsCamelCase<InjectStyleAppOption>): P
   const { default: injectComponentStyleApp } = await import('../utils/injectComponentStyleApp.js');
 
   await injectComponentStyleApp({
-    value: argv.style.trim(),
+    value: argv['style'] as string,
   });
 
   // console.log(argv);

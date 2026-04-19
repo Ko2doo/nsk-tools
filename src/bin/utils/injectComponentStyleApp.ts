@@ -1,9 +1,11 @@
+import type { InjectStyleAppOption } from '../@types/injectComponentStyle.js';
+
 // Утилита для инъекции стилей компонента в главный файл стилей
 // с помощью конструкции @use '';
 
 import { KITSYS as system, KITPLUGIN as plugin, KITCONFIG as cfg, errorThrower } from '../config/config.js';
 
-const injectComponentStyleApp = async ({ value }) => {
+const injectComponentStyleApp = async ({ value }: InjectStyleAppOption): Promise<void> => {
   try {
     // Проверяем передачу аргумента и не пустая ли там строка
     if (!value) {
@@ -50,7 +52,7 @@ const injectComponentStyleApp = async ({ value }) => {
     await system.fsPromises.appendFile(index_abs, import_line, 'utf8');
     console.log(plugin.chalk.green(`Добавлен импорт: ${import_line}`));
   } catch (error) {
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 };
 

@@ -11,7 +11,8 @@
     "dist/"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "node build.mjs",
+    "type-check": "tsc --noEmit",
     "dev": "tsx src/bin/cli.ts",
     "prepublishOnly": "npm run build"
   },
@@ -58,9 +59,12 @@
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",
+    "@types/imagemin": "^9.0.1",
+    "@types/imagemin-gifsicle": "^7.0.4",
     "@types/node": "^20.19.39",
     "@types/svg64": "^1.1.2",
     "@types/yargs": "^17.0.35",
+    "esbuild": "^0.28.0",
     "prettier": "^3.8.3",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"

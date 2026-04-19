@@ -5,15 +5,16 @@
  * https://yargs.js.org/docs/
  */
 
-'use strict';
-
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import { PackageJson } from './@types/packageJson.js';
 import { KITSYS as system } from './config/config.js';
 
 const yargApp = yargs(hideBin(process.argv));
-const pkg = JSON.parse(system.fs.readFileSync(system.node_path.resolve(system.__dirname, './package.json'), 'utf-8'));
+const pkg: PackageJson = JSON.parse(
+  system.fs.readFileSync(system.node_path.resolve(system.__dirname, './package.json'), 'utf-8'),
+);
 
 import { COMMANDS } from './commands/index.js';
 import { GLOBALOPTIONS } from './options/global.js';
@@ -41,7 +42,7 @@ yargApp
     '*',
     false,
     (y) => y,
-    (argv) => {
+    (_argv) => {
       yargApp.showHelp();
     },
   )

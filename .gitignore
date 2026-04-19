@@ -13,6 +13,10 @@ node_modules/
 archives/
 archives/**
 
+# Ignore dist directory
+dist
+build
+
 # Ignore converting directory
 base64Convert/
 
