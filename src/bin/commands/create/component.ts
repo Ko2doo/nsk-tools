@@ -1,21 +1,23 @@
 import type { Argv, ArgumentsCamelCase } from 'yargs';
 import type { ComponentAppOption } from '../../@types/component.js';
 
-export const command = 'component <name>';
+export const command = 'component <names..>';
 export const describe = `
-  Создание njk компонента.
+  Создание njk компонента и необходимых файлов.
 
-  Опции:
-    -n или --name для указания названия создаваемого компонента.
+  Доступно пакетное создание файлов компонент,
+  просто передайте имя нового компонента отделив его пробелом пример:
+    $ npx nsk-tools create component Header Footer
 
   Полная команда:
     $ npx nsk-tools create component Header
   `.trim();
 
 export const builder = (yargs: Argv): Argv<ComponentAppOption> => {
-  yargs.positional('name', {
+  yargs.positional('names', {
     type: 'string',
-    describe: 'Название создаваемого компонента',
+    array: true,
+    describe: 'Названия создаваемых компонентов через пробел.',
     demandOption: true,
   });
 
@@ -26,7 +28,7 @@ export const handler = async (argv: ArgumentsCamelCase<ComponentAppOption>): Pro
   const { default: createComponentApp } = await import('../../utils/createComponentApp.js');
 
   await createComponentApp({
-    name: argv.name.trim(),
+    names: argv.names,
   });
 
   // console.log(argv);

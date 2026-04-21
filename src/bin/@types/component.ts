@@ -1,3 +1,3 @@
 export interface ComponentAppOption {
-  name: string;
+  names: string[];
 }
