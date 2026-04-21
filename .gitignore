@@ -17,6 +17,11 @@ archives/**
 dist
 build
 
+src/assets
+src/views
+
+assets
+
 # Ignore converting directory
 base64Convert/
 

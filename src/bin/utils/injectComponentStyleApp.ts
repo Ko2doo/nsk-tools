@@ -45,8 +45,7 @@ const injectComponentStyleApp = async ({ names }: InjectStyleAppOption): Promise
 
       if (current.includes(import_line)) {
         console.warn(plugin.chalk.yellow(`Импорт уже существует, пропуск: ${import_line}`));
-
-        return;
+        continue;
       }
 
       // Добавляем импорт
