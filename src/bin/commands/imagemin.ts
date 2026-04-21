@@ -1,8 +1,7 @@
 import type { Argv, ArgumentsCamelCase } from 'yargs';
 import type { ImageminAppOption } from '../@types/imagemin.js';
 
-import { KITSYS } from '../config/config.js';
-const node_path = KITSYS.node_path;
+import { KITSYS as system } from '../config/config.js';
 
 export const command = 'imagemin';
 export const describe = `
@@ -50,7 +49,7 @@ export const builder = (yargs: Argv): Argv<ImageminAppOption> => {
     type: 'string',
     describe: 'Путь до каталога с изображениями.',
     // приводим значение к абсолютному пути, чтобы utils не думали о платформе
-    coerce: (p) => (p ? node_path.resolve(p) : p),
+    coerce: (p) => (p ? system.node_path.resolve(p) : p),
   });
 
   yargs.option('output', {
@@ -58,7 +57,7 @@ export const builder = (yargs: Argv): Argv<ImageminAppOption> => {
     type: 'string',
     describe: 'Путь до выходного каталога.',
     // приводим значение к абсолютному пути, чтобы utils не думали о платформе
-    coerce: (p) => (p ? node_path.resolve(p) : p),
+    coerce: (p) => (p ? system.node_path.resolve(p) : p),
   });
 
   // Опция по конвертации изображений в разные форматы
