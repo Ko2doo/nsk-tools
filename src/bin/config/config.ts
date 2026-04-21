@@ -5,6 +5,7 @@ import type { StyleConfig, KitPlugin, KitSys, ArchiveMode, ArchiveItem, KitConfi
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
 import * as node_path from 'node:path';
+import * as nodeReadline from 'node:readline';
 
 import archiver from 'archiver';
 import chalk from 'chalk';
@@ -25,6 +26,7 @@ export const KITSYS: KitSys = {
   fs: fs,
   fsPromises: fsPromises,
   node_path: node_path,
+  readline: nodeReadline,
   __dirname: __dirname,
 };
 

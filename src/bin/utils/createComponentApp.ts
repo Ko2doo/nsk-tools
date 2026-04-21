@@ -9,6 +9,8 @@ import {
   errorThrower,
 } from '../config/config.js';
 
+import { askConfirm } from './helpers/readlinePrompts.js';
+
 const createComponentApp = async ({ names }: ComponentAppOption): Promise<void> => {
   try {
     for (const name of names) {
@@ -39,7 +41,7 @@ const createComponentApp = async ({ names }: ComponentAppOption): Promise<void> 
 
       // Для логов
       const component_out_dir_log = system.node_path.join(component_dir, system.node_path.basename(name));
-      const data_out_dir_log = system.node_path.join(data_dir, system.node_path.basename(name));
+      // const data_out_dir_log = system.node_path.join(data_dir, system.node_path.basename(name));
 
       // проверка на дубликаты
       try {
@@ -87,6 +89,12 @@ const createComponentApp = async ({ names }: ComponentAppOption): Promise<void> 
 
       console.log(plugin.chalk.green(`Набор данных компонента: "${name}" успешно созданы.`));
       console.log(plugin.chalk.bgGrey('################################################'));
+    }
+
+    const confirmed = await askConfirm(plugin.chalk.green('Подключить стили созданых компонент?'));
+    if (confirmed) {
+      const { default: injectComponentStyleApp } = await import('./injectComponentStyleApp.js');
+      await injectComponentStyleApp({ names });
     }
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));

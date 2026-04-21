@@ -4,6 +4,7 @@
 import type * as fsType from 'node:fs';
 import type * as fsPromisesType from 'node:fs/promises';
 import type * as nodePathType from 'node:path';
+import type * as nodeReadline from 'node:readline';
 
 // Other Libraries types
 import type { ChalkInstance } from 'chalk';
@@ -33,6 +34,7 @@ export interface KitSys {
   fs: typeof fsType;
   fsPromises: typeof fsPromisesType;
   node_path: typeof nodePathType;
+  readline: typeof nodeReadline;
   __dirname: string;
 }
 

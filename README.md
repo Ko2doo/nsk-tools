@@ -39,8 +39,16 @@ $ npx nsk-tools
 
 Быстрое создание _компонент_ и их файлов командой:
 
+Одиночное создание:
+
 ```bash
 $ npx nsk-tools create component <componentName>
+```
+
+Пакетное создание:
+
+```bash
+$ npx nsk-tools create component <componentName> <componentName2> <componentName3> ...etc
 ```
 
 Создаст директории с файлами в **src/**:
@@ -70,8 +78,16 @@ src/
 
 Быстрое подключение файла стилей компоненты командой:
 
+Импорт одного компонента:
+
 ```bash
-$ npx nsk-tools import -s <componentName>
+$ npx nsk-tools import style <componentName>
+```
+
+Пакетный импорт:
+
+```bash
+$ npx nsk-tools import style <componentName> <componentName2> <componentName3> ...etc
 ```
 
 Эта команда подключит файл стилей в:

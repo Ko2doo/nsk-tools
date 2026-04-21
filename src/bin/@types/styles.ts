@@ -1,3 +1,3 @@
 export interface InjectStyleAppOption {
-  value: string;
+  names: string[];
 }
