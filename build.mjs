@@ -13,7 +13,7 @@ await build({
   bundle: true,
   minify: true,
   platform: 'node',
-  target: 'node20',
+  target: 'node22',
   format: 'esm',
   outfile: 'dist/bin/cli.js',
   // banner: {

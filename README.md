@@ -1,172 +1,168 @@
-## nsk-tools
+# nsk-tools
 
-<p>
-  <b>nsk-tools</b> - Nunjucks Starter Kit tools - инструменты командной строки, для <a href="https://github.com/Template-Craft/gulp-nunjucks-starter-kit" target="_blank">gulp-nunjucks-starter-kit.</a>
-  <br>
-  Теперь это отдельный инструмент и является опциональным дополнением к основному (gulp-nunjucks-starter-kit).
-</p>
+![npm version](https://img.shields.io/npm/v/@galaxyrobot1x/nsk-tools)
+![license](https://img.shields.io/npm/l/@galaxyrobot1x/nsk-tools)
+![node](https://img.shields.io/node/v/@galaxyrobot1x/nsk-tools)
 
-## Почему?
+**nsk-tools** (Nunjucks Starter Kit tools) — CLI tools for
+[gulp-nunjucks-starter-kit](https://github.com/Template-Craft/gulp-nunjucks-starter-kit).
+Now a standalone tool and optional companion to the main starter kit — usable either
+alongside it or in any other project.
 
-1. Я считаю что каждый инструмент не должен зависить друг от друга и выполнять свою работу качественно.
-2. Я активно изучаю TS и мне стало интересно переписать один из своих инструментов на него.
-3. У _imagemin_ и его семейства плагинов постоянные проблемы с безопасностью (кому-то это может не понравится).
-4. Возможное расширение функционала в будущем.
-5. Независимость инструментов.
+## Contents
 
-## Особенности
+- [Why?](#why)
+- [Installation](#installation)
+- [Commands](#commands)
+  - [create component](#create-component)
+  - [import style](#import-style)
+  - [imagemin](#imagemin)
+  - [create archive](#create-archive)
+  - [base64Converter](#base64converter)
 
-_Внимание!_
+## Why?
 
-Следующие пакеты являются обёртками над утилитами:
+1. No tool should depend on another — each should do its own job well.
+2. A chance to apply and deepen TypeScript knowledge by rewriting one of my own tools in it.
+3. _imagemin_ and its family of plugins have a recurring history of security issues — moving
+   this out into a separate, independent package reduces coupling with the core build system.
+4. Room for future functionality.
+5. Independence between tools.
 
-- imagemin-gifsicle: Обёртка над утилитой gifsicle.
-- imagemin-jpegtran: Обёртка над утилитой jpegtran (часть libjpeg).
-- imagemin-pngquant: Обёртка над утилитой pngquant.
-- imagemin-webp: Обёртка над утилитой cwebp.
+> The following packages are wrappers around system utilities:
+> `imagemin-gifsicle` (gifsicle) · `imagemin-jpegtran` (libjpeg) ·
+> `imagemin-pngquant` (pngquant) · `imagemin-webp` (cwebp)
 
----
-
-## Возможности
-
-Для получения полной справки воспользуйтесь командой:
-
-```bash
-$ npx nsk-tools
-```
-
-#### Создание компонент
-
-Быстрое создание _компонент_ и их файлов командой:
-
-Одиночное создание:
+## Installation
 
 ```bash
-$ npx nsk-tools create component <componentName>
+npm install --save-dev @galaxyrobot1x/nsk-tools
 ```
 
-Пакетное создание:
+# or run it directly without installing
 
 ```bash
-$ npx nsk-tools create component <componentName> <componentName2> <componentName3> ...etc
+npx @galaxyrobot1x/nsk-tools <command>
 ```
 
-Создаст директории с файлами в **src/**:
+Requirements: Node.js ≥ 22, npm ≥ 10. Supported platforms: macOS, Linux, Windows.
+
+Full help for all commands:
+
+```bash
+npx nsk-tools
+```
+
+## Commands
+
+### create component
+
+Generates an `.njk` component and its accompanying files.
+
+# single component
+
+```bash
+npx nsk-tools create component Header
+```
+
+# batch creation — space-separated
+
+```bash
+npx nsk-tools create component Header Footer
+```
+
+Creates the following structure in `src/`:
 
 ```text
 src/
 └── views/
-    └── components/
-        └── ComponentName/
-            └── ComponentName.njk
-            └── ComponentName.scss
-            └── ComponentName.mjs
+├── components/
+│ └── Header/
+│ ├── Header.njk
+│ ├── Header.scss
+│ └── Header.mjs
+└── data/
+└── Header.json
 ```
 
-А так же данные для компоненты:
+### import style
 
-```text
-src/
-└── views/
-    └── data/
-        └── ComponentName/json
-```
+Adds the component's stylesheet import to `_components_import.scss`. No path or
+extension needed — just the component name.
 
----
-
-#### Подключение файлов стилей
-
-Быстрое подключение файла стилей компоненты командой:
-
-Импорт одного компонента:
+# single import
 
 ```bash
-$ npx nsk-tools import style <componentName>
+npx nsk-tools import style Header
 ```
 
-Пакетный импорт:
+# batch import
 
 ```bash
-$ npx nsk-tools import style <componentName> <componentName2> <componentName3> ...etc
+npx nsk-tools import style Header Footer
 ```
 
-Эта команда подключит файл стилей в:
-
-```text
-src/
-└── assets/
-    └── styles/
-        └── _components_import.scss
-```
-
-Пример подключаемой строки внутри **\_components_import.scss**:
+Adds a line like:
 
 ```scss
-@use "../../views/components/ComponentName/_ComponentName.scss";
+@use "../../views/components/Header/_Header.scss";
 ```
 
-Для получения полной справки воспользуйтесь командой:
+### imagemin
+
+Image optimization and conversion built on `imagemin` and its plugins.
 
 ```bash
-$ npx nsk-tools import --help
+npx nsk-tools imagemin -m jpeg --input=./src/assets/img --output=./build/assets/img
+```
+
+| Option      | Alias | Description                                            |
+| ----------- | ----- | ------------------------------------------------------ |
+| `--minify`  | `-m`  | Format to optimize: `gif`, `jpeg`, `png`, `svg`, `all` |
+| `--convert` | `-c`  | Convert to another format: `webp` (for jpg/png)        |
+| `--input`   | `-i`  | Path to the source images directory                    |
+| `--output`  | `-o`  | Path to the output directory                           |
+
+# convert to webp
+
+```bash
+npx nsk-tools imagemin -m jpeg -c webp --input=./src/assets/img --output=./build/assets/img
+```
+
+### create archive
+
+Archives project files and directories into `tgz`, `zip`, or `tar`.
+
+```bash
+npx nsk-tools create archive -o zip -p <directory>
+npx nsk-tools create archive -o tgz -p <directory>
+npx nsk-tools create archive -o tar -p <directory>
+```
+
+### base64Converter
+
+Converts SVG files to base64 — single file or batch.
+
+# single file — output printed to console
+
+```bash
+npx nsk-tools base64Converter -m single -p ./src/assets/img/icon.svg
+```
+
+# entire directory — output saved to a text file
+
+```bash
+npx nsk-tools base64Converter -m all -p ./src/assets/img
 ```
 
 ---
 
-#### Минификация, трансформация изображений
-
-Возможность минификации, трансформации некоторых изображений посредством использования заготовленных настроек для **imagemin** и его плагинов.
-
-Для получения полной справки воспользуйтесь командой:
+Full help for any command:
 
 ```bash
-$ npx nsk-tools imagemin --help
+npx nsk-tools <command> --help
 ```
 
----
+## License
 
-#### Создание архивов
-
-Возможность создания архивов формата: **tgz, zip, tar**.
-
-Создание _zip_ архива:
-
-```bash
-$ npx nsk-tools create archive -o zip -p <yourDirectory>
-```
-
-Создание _tgz_ архива:
-
-```bash
-$ npx nsk-tools create archive -o tgz -p <yourDirectory>
-```
-
-Создание _tar_ архива:
-
-```bash
-$ npx nsk-tools create archive -o tar -p <yourDirectory>
-```
-
-Для получения полной справки воспользуйтесь командой:
-
-```bash
-$ npx nsk-tools create archive --help
-```
-
----
-
-#### Преобразование svg base64
-
-Возможность пакетного или одиночного преобразования svg файлов в base64.
-
-Следующая команда преобразует svg и выведет преобразование в консоль:
-
-```bash
-$ npx nsk-tools base64Converter -m single -p yourSvg.svg
-```
-
-Для получения полной справки воспользуйтесь командой:
-
-```bash
-$ npx nsk-tools create archive --help
-```
+MIT
