@@ -1,4 +1,5 @@
-// команда archive -o или --options {tar, tgz, zip} -p или --path your_path
+import type { Argv, ArgumentsCamelCase } from 'yargs';
+import type { ArchiveAppOption } from '../../@types/archive.js';
 
 export const command = 'archive';
 export const describe = `
@@ -19,12 +20,12 @@ export const describe = `
     $ npx nsk-tools create archive -o tgz -p build
   `.trim();
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<ArchiveAppOption> => {
   // Опция для указания формата архива
   yargs.option('options', {
     alias: 'o',
     type: 'string',
-    choices: ['tgz', 'tar', 'zip'], // выбор дополнительных опций
+    choices: ['tgz', 'tar', 'zip'] as const, // выбор дополнительных опций
     describe: `
       после ввода -o или --options, введите в каком формате необходимо создать архив.
 
@@ -39,10 +40,12 @@ export const builder = (yargs) => {
     ['options', 'path'],
     'Пожалуйста укажите опции архиватора и путь или название дир-рии что-бы создать архив.',
   );
+
+  return yargs as Argv<ArchiveAppOption>;
 };
 
-export const handler = async (argv) => {
-  const { default: createArchiveApp } = await import('../../utils/createArchiveApp.mjs');
+export const handler = async (argv: ArgumentsCamelCase<ArchiveAppOption>): Promise<void> => {
+  const { default: createArchiveApp } = await import('../../utils/createArchiveApp.js');
 
   await createArchiveApp({
     options: argv.options,

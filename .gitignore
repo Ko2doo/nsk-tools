@@ -5,9 +5,6 @@ node_modules/
 */**/*.directory
 *.directory
 
-# Ignore Build directory
-build/
-dist/
 
 # Ignore package-lock.json file
 #package-lock.json
@@ -15,6 +12,15 @@ dist/
 # Ignore archives directory
 archives/
 archives/**
+
+# Ignore dist directory
+dist
+build
+
+src/assets
+src/views
+
+assets
 
 # Ignore converting directory
 base64Convert/

@@ -1,32 +1,52 @@
-/* eslint-disable n/no-unpublished-import */
+// Import types
+import type { StyleConfig, KitPlugin, KitSys, ArchiveMode, ArchiveItem, KitConfig } from '../@types/config.js';
 
+// Import Libraries
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
-import node_path from 'node:path';
+import * as node_path from 'node:path';
+import * as nodeReadline from 'node:readline';
 
 import archiver from 'archiver';
 import chalk from 'chalk';
-import svg64 from 'svg64';
+import svg64Plugin from 'svg64';
 
 const __dirname = node_path.resolve();
 const CWD = process.cwd();
 
 // часто используемые плагины
-export const KITPLUGIN = {
+export const KITPLUGIN: KitPlugin = {
   chalk: chalk,
   archiver: archiver,
-  svg64: svg64,
+  svg64: svg64Plugin,
 };
 
 // часто используемые системные и прочие API Node.js
-export const KITSYS = {
+export const KITSYS: KitSys = {
   fs: fs,
   fsPromises: fsPromises,
   node_path: node_path,
+  readline: nodeReadline,
   __dirname: __dirname,
 };
 
-export const KITCONFIG = {
+// Функция фабрика, для создания необходимых файлов и импортов
+function createStyleConfig(extension: string, component_path: string, include_in: string): StyleConfig {
+  return {
+    extension,
+    component_path,
+    include_in,
+
+    component_stylesheet: function (dir_path, value) {
+      return KITSYS.node_path.join(dir_path, `_${value}${extension}`);
+    },
+    import_stylesheet: function (value) {
+      return `\n@use '../../views/components/${value}/_${value}${extension}';\n`;
+    },
+  };
+}
+
+export const KITCONFIG: KitConfig = {
   template: {
     extension: '.njk',
     data_dir: KITSYS.node_path.resolve(CWD, 'src/views/data/'),
@@ -34,17 +54,11 @@ export const KITCONFIG = {
       return KITSYS.node_path.resolve(CWD, `src/views/components/${value}/`);
     },
   },
-  styles: {
-    extension: '.scss',
-    component_path: KITSYS.node_path.resolve(CWD, 'src/views/components/'),
-    include_in: KITSYS.node_path.resolve(CWD, 'src/assets/styles/_components_import.scss'),
-    component_stylesheet: function (dir_path, value) {
-      return KITSYS.node_path.join(dir_path, `_${value}${this.extension}`);
-    },
-    import_stylesheet: function (value) {
-      return `\n@use '../../views/components/${value}/_${value}${this.extension}';\n`;
-    },
-  },
+  styles: createStyleConfig(
+    '.scss',
+    KITSYS.node_path.resolve(CWD, 'src/views/components/'),
+    KITSYS.node_path.resolve(CWD, 'src/assets/styles/_components_import.scss'),
+  ),
   archive: [
     {
       options: {
@@ -90,10 +104,6 @@ export const KITCONFIG = {
       'removeEmptyContainers',
       'sortAttrs',
       'sortDefsChildren',
-      {
-        name: ['removeViewBox'],
-        active: false, // выключено по умолчанию https://svgo.dev/docs/plugins/removeViewBox/
-      },
       // {
       //   name: 'removeAttrs',
       //   params: {
@@ -126,17 +136,21 @@ export const KITCONFIG = {
 export const PROJECT_ROOT = CWD;
 
 // функция помощник, созданная для прокидывания ошибок
-export function errorThrower(msg) {
-  if (typeof msg === 'string') throw new Error(msg.trim());
+export function errorThrower(msg: unknown): never {
+  if (msg instanceof Error) throw msg;
 
-  throw new Error(msg);
+  if (typeof msg === 'string') {
+    throw new Error(msg.trim());
+  }
+
+  throw new Error(String(msg));
 }
 
 // @type function
 // 1 аргументом передаём массив с коллекцией файлов
 // 2 аргументом передаём путь до дир-рии, в которой создаём объекты
 // @param: CREATE_FILES(collection, dir_path)
-export const CREATE_FILES = async (collection, dir_path) => {
+export const CREATE_FILES = async (collection: readonly string[], dir_path: string): Promise<void> => {
   await Promise.all(
     collection.map(async (file) => {
       const target = KITSYS.node_path.join(dir_path, KITSYS.node_path.basename(file));
@@ -154,23 +168,28 @@ export const CREATE_FILES = async (collection, dir_path) => {
 // 1 - коллекцию объектов массива с параметрами для архиватора
 // 2 - опцию о расширении архива {tgz, tar, zip} (получаем из консоли)
 // 3 - имя директории, так-же получаем из консоли (то что ввёл пользователь)
-export const CREATE_ARCHIVE = (archive_option_collection, input_option, input_values) => {
+export const CREATE_ARCHIVE = (
+  archive_option_collection: readonly ArchiveItem[],
+  input_option: ArchiveMode,
+  input_values: string,
+): void => {
   try {
     // в цикле перебираем массив с коллекцией объектов опций для архиватора
     archive_option_collection.forEach((collection) => {
       // ищем совпадение в массиве объектов с тем, что пришло от пользователя в консоли
-      const item_compare = collection.options.mode.includes(input_option);
+      // const item_compare = collection.options.mode.includes(input_option);
+      const isMatch = collection.options.mode === input_option;
 
       // проверяем результат
-      if (item_compare) {
+      if (isMatch) {
         // debug mode
         console.log(
-          item_compare
+          isMatch
             ? `Успешное сравнение: ${KITPLUGIN.chalk.green(
-                item_compare,
+                isMatch,
               )} - совпадает со значением пришедшим из консоли, перехожу к созданию архива...`
             : `Неудачное сравнение: ${KITPLUGIN.chalk.red(
-                item_compare,
+                isMatch,
               )} - не совпадает со значением пришедшим из консоли, останавливаю работу.`,
         );
 

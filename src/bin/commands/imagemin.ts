@@ -1,7 +1,7 @@
-// команда imagemin - для оптимизации изображений, используется imagemin и прочие плагины.
+import type { Argv, ArgumentsCamelCase } from 'yargs';
+import type { ImageminAppOption } from '../@types/imagemin.js';
 
-import { KITSYS } from '../config/config.mjs';
-const node_path = KITSYS.node_path;
+import { KITSYS as system } from '../config/config.js';
 
 export const command = 'imagemin';
 export const describe = `
@@ -26,7 +26,7 @@ export const describe = `
     $ npx nsk-tools imagemin -m jpeg --input="./src/assets/img" --output="./build/assets/img"
 `.trim();
 
-export const builder = (yargs) => {
+export const builder = (yargs: Argv): Argv<ImageminAppOption> => {
   // Опция для выбора режима работы
   yargs.option('minify', {
     alias: 'm',
@@ -49,7 +49,7 @@ export const builder = (yargs) => {
     type: 'string',
     describe: 'Путь до каталога с изображениями.',
     // приводим значение к абсолютному пути, чтобы utils не думали о платформе
-    coerce: (p) => (p ? node_path.resolve(p) : p),
+    coerce: (p) => (p ? system.node_path.resolve(p) : p),
   });
 
   yargs.option('output', {
@@ -57,7 +57,7 @@ export const builder = (yargs) => {
     type: 'string',
     describe: 'Путь до выходного каталога.',
     // приводим значение к абсолютному пути, чтобы utils не думали о платформе
-    coerce: (p) => (p ? node_path.resolve(p) : p),
+    coerce: (p) => (p ? system.node_path.resolve(p) : p),
   });
 
   // Опция по конвертации изображений в разные форматы
@@ -75,15 +75,17 @@ export const builder = (yargs) => {
 
   // необходимые опции для работы команды, иначе ошибка
   yargs.demandOption(['input', 'output'], 'Необходимо указать опции с путями: --input (или -i) и --output (или -o)');
+
+  return yargs as Argv<ImageminAppOption>;
 };
 
-export const handler = async (argv) => {
-  const { default: imageminApp } = await import('../utils/imageminApp.mjs');
+export const handler = async (argv: ArgumentsCamelCase<ImageminAppOption>): Promise<void> => {
+  const { default: imageminApp } = await import('../utils/imageminApp.js');
 
   await imageminApp({
     cmd: argv._[0], // команда imagemin
-    minifyCMD: argv.minify,
-    convertCMD: argv.convert,
+    minify: argv.minify,
+    convert: argv.convert,
     input: argv.input,
     output: argv.output,
   });

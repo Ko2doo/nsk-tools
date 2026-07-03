@@ -1,6 +1,7 @@
-/* eslint-disable n/no-unpublished-import */
 // Оптимизация, и конвертация изображений.
 // Используется плагин imagemin и его дополнительные плагины.
+
+import type { ImageminAppOption } from '../@types/imagemin.js';
 
 import imagemin from 'imagemin';
 import imageminJPEGtran from 'imagemin-jpegtran';
@@ -9,34 +10,34 @@ import imageminGIFsicle from 'imagemin-gifsicle';
 import imageminSVGO from 'imagemin-svgo';
 import imageminWEBP from 'imagemin-webp';
 
-import { KITPLUGIN as plugin, KITCONFIG as cfg, errorThrower } from '../config/config.mjs';
+import { KITPLUGIN as plugin, KITCONFIG as cfg, errorThrower } from '../config/config.js';
 
-const imageminApp = async ({ cmd, minifyCMD, convertCMD, input, output }) => {
+const imageminApp = async ({ cmd, minify, convert, input, output }: ImageminAppOption): Promise<void> => {
+  // фун-ция помощник вывода информации в консоль
+  // Принимает объект пришедший из yargs (в данном случае argv)
+  function consoleInformer(): void {
+    // Вывод информации в консоль
+    console.log(plugin.chalk.bgBlue(';----------------------------------------------------:'));
+    console.log('Получены данные для оптимизации:');
+    console.log(`Получена команда: ${plugin.chalk.green(cmd)}`.trim());
+
+    // Обрабатываем опции команды, и выводим сообщение только если пришла правильная опция
+    if (minify) {
+      console.log(`Аргументы команды: ${plugin.chalk.green(`--minify="${minify}"`)}`.trim());
+    }
+
+    if (convert) {
+      console.log(`Аргументы команды: ${plugin.chalk.green(`--convert="${convert}"`)}`.trim());
+    }
+
+    console.log(`Исходные изображения: ${plugin.chalk.green(input)}`.trim());
+    console.log(`Оптимизированные изображения: ${plugin.chalk.blue(output)}`.trim());
+    console.log(plugin.chalk.bgBlue(';----------------------------------------------------:'));
+  }
+
   try {
     // debugging
     // console.log('imageOptimization:\n', argv);
-
-    // фун-ция помощник вывода информации в консоль
-    // Принимает объект пришедший из yargs (в данном случае argv)
-    function consoleInformer() {
-      // Вывод информации в консоль
-      console.log(plugin.chalk.bgBlue(';----------------------------------------------------:'));
-      console.log('Получены данные для оптимизации:');
-      console.log(`Получена команда: ${plugin.chalk.green(cmd)}`.trim());
-
-      // Обрабатываем опции команды, и выводим сообщение только если пришла правильная опция
-      if (minifyCMD) {
-        console.log(`Аргументы команды: ${plugin.chalk.green(`--minify="${minifyCMD}"`)}`.trim());
-      }
-
-      if (convertCMD) {
-        console.log(`Аргументы команды: ${plugin.chalk.green(`--convert="${convertCMD}"`)}`.trim());
-      }
-
-      console.log(`Исходные изображения: ${plugin.chalk.green(input)}`.trim());
-      console.log(`Оптимизированные изображения: ${plugin.chalk.blue(output)}`.trim());
-      console.log(plugin.chalk.bgBlue(';----------------------------------------------------:'));
-    }
 
     // Проверяем команду, аргументы, и пути
     // если путые и неопределённые - то сообщаем об ошибке.
@@ -51,7 +52,7 @@ const imageminApp = async ({ cmd, minifyCMD, convertCMD, input, output }) => {
       );
     }
 
-    if (!minifyCMD && !convertCMD) {
+    if (!minify && !convert) {
       errorThrower(
         `
         ${plugin.chalk.bgRedBright.white('Ошибка!')}
@@ -66,7 +67,7 @@ const imageminApp = async ({ cmd, minifyCMD, convertCMD, input, output }) => {
     consoleInformer();
 
     // Обработка опций для оптимизации изображений
-    switch (minifyCMD || convertCMD) {
+    switch (minify || convert) {
       // argument - all
       case 'all':
         {
@@ -144,7 +145,7 @@ const imageminApp = async ({ cmd, minifyCMD, convertCMD, input, output }) => {
         break;
     }
   } catch (error) {
-    console.error(error.message);
+    console.error(error instanceof Error ? error.message : String(error));
   }
 };
 
