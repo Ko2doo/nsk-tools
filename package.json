@@ -1,6 +1,6 @@
 {
   "name": "@galaxyrobot1x/nsk-tools",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "nsk-tools - description: Nunjucks Starter Kit tools. Now a standalone tool and optional companion to the main starter kit — usable either alongside it or in any other project.",
   "type": "module",
   "bin": {
