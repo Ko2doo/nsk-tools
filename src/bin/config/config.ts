@@ -1,5 +1,6 @@
 // Import types
 import type { StyleConfig, KitPlugin, KitSys, ArchiveMode, ArchiveItem, KitConfig } from '../@types/config.js';
+import type { ArchiverError } from 'archiver';
 
 // Import Libraries
 import * as fs from 'node:fs';
@@ -7,7 +8,7 @@ import * as fsPromises from 'node:fs/promises';
 import * as node_path from 'node:path';
 import * as nodeReadline from 'node:readline';
 
-import archiver from 'archiver';
+import { ZipArchive, TarArchive } from 'archiver';
 import chalk from 'chalk';
 import svg64Plugin from 'svg64';
 
@@ -17,7 +18,7 @@ const CWD = process.cwd();
 // часто используемые плагины
 export const KITPLUGIN: KitPlugin = {
   chalk: chalk,
-  archiver: archiver,
+  archiver: { zip: ZipArchive, tar: TarArchive },
   svg64: svg64Plugin,
 };
 
@@ -65,7 +66,7 @@ export const KITCONFIG: KitConfig = {
         mode: 'tgz',
         extension: 'tar.gz',
         make: () =>
-          KITPLUGIN.archiver('tar', {
+          new KITPLUGIN.archiver.tar({
             gzip: true,
             gzipOptions: { level: 1 },
           }),
@@ -75,14 +76,14 @@ export const KITCONFIG: KitConfig = {
       options: {
         mode: 'tar',
         extension: 'tar',
-        make: () => KITPLUGIN.archiver('tar'),
+        make: () => new KITPLUGIN.archiver.tar(),
       },
     },
     {
       options: {
         mode: 'zip',
         extension: 'zip',
-        make: () => KITPLUGIN.archiver('zip'),
+        make: () => new KITPLUGIN.archiver.zip(),
       },
     },
   ],
@@ -184,13 +185,7 @@ export const CREATE_ARCHIVE = (
       if (isMatch) {
         // debug mode
         console.log(
-          isMatch
-            ? `Успешное сравнение: ${KITPLUGIN.chalk.green(
-                isMatch,
-              )} - совпадает со значением пришедшим из консоли, перехожу к созданию архива...`
-            : `Неудачное сравнение: ${KITPLUGIN.chalk.red(
-                isMatch,
-              )} - не совпадает со значением пришедшим из консоли, останавливаю работу.`,
+          `Успешное сравнение: ${KITPLUGIN.chalk.green(true)} - совпадает со значением пришедшим из консоли, перехожу к созданию архива...`,
         );
 
         const extension = collection.options.extension;
@@ -209,19 +204,31 @@ export const CREATE_ARCHIVE = (
         const destination = KITSYS.node_path.join(outDir, `${base}-${stamp.replace(/[:.]/g, '-')}.${extension}`);
         const destination_stream = KITSYS.fs.createWriteStream(destination);
 
+        destination_stream.on('error', function (err) {
+          errorThrower(err);
+        });
+
         destination_stream.on('close', function () {
           console.log(KITPLUGIN.chalk.yellow(archive_option.pointer() + ' total bytes'));
           console.log('Архиватор был завершен, и дескриптор выходного файла закрылся.\nАрхив успешно создан.');
         });
 
-        archive_option.on('error', function (err) {
+        archive_option.on('warning', function (err: ArchiverError) {
+          if (err.code === 'ENOENT') {
+            console.warn(KITPLUGIN.chalk.yellow(`! Предупреждение: ${err.message}`));
+          } else {
+            errorThrower(err);
+          }
+        });
+
+        archive_option.on('error', function (err: ArchiverError) {
           errorThrower(err);
         });
 
         archive_option.pipe(destination_stream);
 
         // Игнорируем всё под 'archives/**'
-        const ignorePatterns = [];
+        const ignorePatterns: string[] = [];
 
         // Если архивируем корень проекта, то игнорируем:
         // PROJECT_ROOT/archives/**, PROJECT_ROOT/node_modules/**, PROJECT_ROOT/.git/**
@@ -241,7 +248,9 @@ export const CREATE_ARCHIVE = (
         // prefix: base/ > внутри архива корневой каталог будет называться как исходная папка
         archive_option.glob('**/*', { cwd: srcAbs, dot: true, ignore: ignorePatterns }, { prefix: `${base}/` });
 
-        archive_option.finalize();
+        archive_option.finalize().catch((err: ArchiverError) => {
+          errorThrower(err);
+        });
       }
     });
   } catch (error) {

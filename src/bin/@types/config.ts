@@ -8,7 +8,7 @@ import type * as nodeReadline from 'node:readline';
 
 // Other Libraries types
 import type { ChalkInstance } from 'chalk';
-import type archiver from 'archiver';
+import type { ZipArchive, TarArchive } from 'archiver';
 import type svg64Plugin from 'svg64';
 import type { Config as SvgoConfig } from 'svgo';
 
@@ -25,7 +25,10 @@ export interface StyleConfig {
 // Plugin types
 export interface KitPlugin {
   chalk: ChalkInstance;
-  archiver: typeof archiver;
+  archiver: {
+    zip: typeof ZipArchive;
+    tar: typeof TarArchive;
+  };
   svg64: typeof svg64Plugin;
 }
 
@@ -43,7 +46,7 @@ export type ArchiveMode = 'tgz' | 'tar' | 'zip';
 export interface ArchiveOptions {
   mode: ArchiveMode;
   extension: string;
-  make(): ReturnType<typeof archiver>;
+  make(): InstanceType<typeof ZipArchive> | InstanceType<typeof TarArchive>;
 }
 
 export interface ArchiveItem {
