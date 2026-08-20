@@ -4,11 +4,11 @@
   "description": "nsk-tools - description: Nunjucks Starter Kit tools. Now a standalone tool and optional companion to the main starter kit — usable either alongside it or in any other project.",
   "type": "module",
   "bin": {
-    "nsk-tools": "./dist/bin/cli.js"
+    "nsk-tools": "./bin/cli.js"
   },
-  "main": "./dist/bin/cli.js",
+  "main": "./bin/cli.js",
   "files": [
-    "dist/"
+    "bin/"
   ],
   "scripts": {
     "build": "node build.mjs",

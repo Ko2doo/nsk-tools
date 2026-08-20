@@ -16,6 +16,7 @@ archives/**
 # Ignore dist directory
 dist
 build
+bin
 
 src/assets
 src/views
